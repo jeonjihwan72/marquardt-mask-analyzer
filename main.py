@@ -62,7 +62,7 @@ while True:
         score5 = calculate_score(ratio_face_height, 1.618)
 
         # 가중치 적용 계산
-        weights = [1.0, 1.0, 1.0, 1.0, 1.0]
+        weights = [1.0, 1.0, 0.8, 0.8, 1.5]
         scores = [score1, score2, score3, score4, score5]
         
         # 최종 평균 점수 계산
