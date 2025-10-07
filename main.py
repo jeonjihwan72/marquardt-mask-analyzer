@@ -1,4 +1,8 @@
 import cv2
+import dlib
+
+# Dlib의 기본 얼굴 탐지기를 호출
+detector = dlib.get_frontal_face_detector()
 
 # 0번 카메라(기본 웹캠)에 연결
 cap = cv2.VideoCapture(0)
@@ -18,6 +22,22 @@ while True:
     if not ret:
         print("오류: 프레임을 읽을 수 없습니다.")
         break
+    
+    # 성능 향상을 위해 프레임을 흑백으로 변환
+    # 얼굴 탐지는 색상 정보가 필요없음
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+    # 흑백 이미지에서 얼굴을 탐지
+    faces = detector(gray)
+    
+    # 찾은 얼굴들의 좌표를 반복하면서 사각형 그리기
+    for face in faces:
+        x1, y1 = face.left(), face.top()    # 왼쪽 위 좌표
+        x2, y2 = face.right(), face.bottom()    # 오른쪽 아래 좌표
+        
+        # 원본 커러 프레임에 빨간 사각형 그리기
+        # (frame, 시작점, 끝점, 색상, 두께)
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
     # "Webcam Feed" 라는 이름의 창에 현재 프레임을 보여줌
     cv2.imshow('Webcam Feed', frame)
