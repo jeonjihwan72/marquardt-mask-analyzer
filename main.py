@@ -1,8 +1,12 @@
 import cv2
 import dlib
+import numpy as np
 
 # Dlib의 기본 얼굴 탐지기를 호출
 detector = dlib.get_frontal_face_detector()
+
+# Dlib의 랜드마크 예측기 호출
+predictor = dlib.shape_predictor("./landmark_model/shape_predictor_68_face_landmarks.dat")
 
 # 0번 카메라(기본 웹캠)에 연결
 cap = cv2.VideoCapture(0)
@@ -38,9 +42,19 @@ while True:
         # 원본 커러 프레임에 빨간 사각형 그리기
         # (frame, 시작점, 끝점, 색상, 두께)
         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+        
+        # 얼굴 랜드마크 찾기
+        landmarks = predictor(gray, face)
+        
+        # 68개의 랜드마크에 점 찍기
+        for n in range(0, 68):
+            x = landmarks.part(n).x
+            y = landmarks.part(n).y
+            # 랜드마크 위치에 파란 점 그리기
+            cv2.circle(frame, (x, y), 2, (255, 0, 0), -1)
 
     # "Webcam Feed" 라는 이름의 창에 현재 프레임을 보여줌
-    cv2.imshow('Webcam Feed', frame)
+    cv2.imshow('Facial Landmarks', frame)
 
     # 'q' 키를 누르면 루프에서 빠져나옴
     # 1ms 동안 키 입력을 기다림
