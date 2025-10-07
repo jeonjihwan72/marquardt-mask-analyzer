@@ -78,16 +78,15 @@ while True:
         x, y, w, h = cv2.boundingRect(my_points)
         
         # 각 비율 정보 표시
-        cv2.putText(frame, f"1. nose/lip: {score1:.1f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
-        cv2.putText(frame, f"2. nose/eye: {score2:.1f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
-        cv2.putText(frame, f"3. left eyebrow: {score3:.1f}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
-        cv2.putText(frame, f"3. right eyebrow: {score4:.1f}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
-        cv2.putText(frame, f"3. grabella: {score5:.1f}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
-        cv2.putText(frame, f"3. face shape: {score6:.1f}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+        cv2.putText(frame, f"1. nose/lip: {score1:.1f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+        cv2.putText(frame, f"2. nose/eye: {score2:.1f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+        cv2.putText(frame, f"3. left eyebrow: {score3:.1f}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+        cv2.putText(frame, f"4. right eyebrow: {score4:.1f}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+        cv2.putText(frame, f"5. grabella: {score5:.1f}", (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+        cv2.putText(frame, f"6. face shape: {score6:.1f}", (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
         
         # 최종 점수 표시
-        cv2.rectangle(frame, (x, y - 40), (x + w, y), (0, 180, 0), -1)
-        cv2.putText(frame, f"Total Score: {final_score:.2f}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+        cv2.putText(frame, f"Total Score: {final_score:.2f}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 211, 255), 2)
         
         # 얼굴 윤곽선 그리기 (기존 코드 재활용 가능)
         cv2.polylines(frame, [my_points[0:17].astype(np.int32)], False, (0, 255, 0), 1)
