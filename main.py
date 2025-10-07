@@ -46,12 +46,118 @@ while True:
         # 얼굴 랜드마크 찾기
         landmarks = predictor(gray, face)
         
+        jaw_line_idx = [(i, i+1) for i in range(0, 16)] # 턱선
+        
+        left_eyebrow_idx = [(i, i+1) for i in range(17, 21)]    # 왼쪽 눈썹
+        left_eye_idx = [(i, i+1) for i in range(36, 41)] + [(36, 41)]   # 왼쪽 눈
+        
+        right_eyebrow_idx = [(i, i+1) for i in range(22,26)] # 오른쪽 눈썹
+        right_eye_idx = [(i, i+1) for i in range(42, 47)] + [(42, 47)]  # 오른쪽 눈
+        
+        notch_idx = [(27,28), (28,29), (29,30)] # 콧대
+        nostrill_idx = [(31,32), (32,33), (33,34), (34,35)] # 콧볼, 콧망울
+        
+        upper_lip_idx = [(48,49), (49,50), (50,51), (51,52), (52,53), (53,54), 
+                         (54,64), (64,63), (63,62), (62,61), (61,60), (60,48)]  # 윗입술
+        lower_lip_idx = [(48,60), (60,67), (67,66), (66,65), (65,64), (64,54),
+                         (54,55), (55,56), (56,57), (57,58), (58,59), (59,48)]  # 아랫입술
+               
         # 68개의 랜드마크에 점 찍기
         for n in range(0, 68):
             x = landmarks.part(n).x
             y = landmarks.part(n).y
             # 랜드마크 위치에 파란 점 그리기
-            cv2.circle(frame, (x, y), 2, (255, 0, 0), -1)
+            # cv2.circle(frame, (x, y), 2, (255, 0, 0), -1)
+
+        # 턱선 그리기
+        for idx_tup in jaw_line_idx:
+            first_x = landmarks.part(idx_tup[0]).x
+            first_y = landmarks.part(idx_tup[0]).y
+            
+            second_x = landmarks.part(idx_tup[1]).x
+            second_y = landmarks.part(idx_tup[1]).y
+            
+            cv2.line(frame, (first_x, first_y), (second_x, second_y), (0, 211, 255), 1)
+
+        # 왼쪽 눈썹 그리기
+        for idx_tup in left_eyebrow_idx:
+            first_x = landmarks.part(idx_tup[0]).x
+            first_y = landmarks.part(idx_tup[0]).y
+            
+            second_x = landmarks.part(idx_tup[1]).x
+            second_y = landmarks.part(idx_tup[1]).y
+            
+            cv2.line(frame, (first_x, first_y), (second_x, second_y), (0, 211, 255), 1)
+        
+        # 왼쪽 눈 그리기
+        for idx_tup in left_eye_idx:
+            first_x = landmarks.part(idx_tup[0]).x
+            first_y = landmarks.part(idx_tup[0]).y
+            
+            second_x = landmarks.part(idx_tup[1]).x
+            second_y = landmarks.part(idx_tup[1]).y
+            
+            cv2.line(frame, (first_x, first_y), (second_x, second_y), (0, 211, 255), 1)
+        
+        # 오른쪽 눈썹 그리기
+        for idx_tup in right_eyebrow_idx:
+            first_x = landmarks.part(idx_tup[0]).x
+            first_y = landmarks.part(idx_tup[0]).y
+            
+            second_x = landmarks.part(idx_tup[1]).x
+            second_y = landmarks.part(idx_tup[1]).y
+            
+            cv2.line(frame, (first_x, first_y), (second_x, second_y), (0, 211, 255), 1)
+        
+        # 오른쪽 눈 그리기
+        for idx_tup in right_eye_idx:
+            first_x = landmarks.part(idx_tup[0]).x
+            first_y = landmarks.part(idx_tup[0]).y
+            
+            second_x = landmarks.part(idx_tup[1]).x
+            second_y = landmarks.part(idx_tup[1]).y
+            
+            cv2.line(frame, (first_x, first_y), (second_x, second_y), (0, 211, 255), 1)
+    
+        # 콧대 그리기
+        for idx_tup in notch_idx:
+            first_x = landmarks.part(idx_tup[0]).x
+            first_y = landmarks.part(idx_tup[0]).y
+            
+            second_x = landmarks.part(idx_tup[1]).x
+            second_y = landmarks.part(idx_tup[1]).y
+            
+            cv2.line(frame, (first_x, first_y), (second_x, second_y), (0, 211, 255), 1)
+            
+        # 콧망울 그리기
+        for idx_tup in nostrill_idx:
+            first_x = landmarks.part(idx_tup[0]).x
+            first_y = landmarks.part(idx_tup[0]).y
+            
+            second_x = landmarks.part(idx_tup[1]).x
+            second_y = landmarks.part(idx_tup[1]).y
+            
+            cv2.line(frame, (first_x, first_y), (second_x, second_y), (0, 211, 255), 1)
+            
+        # 윗입술 그리기
+        for idx_tup in upper_lip_idx:
+            first_x = landmarks.part(idx_tup[0]).x
+            first_y = landmarks.part(idx_tup[0]).y
+            
+            second_x = landmarks.part(idx_tup[1]).x
+            second_y = landmarks.part(idx_tup[1]).y
+            
+            cv2.line(frame, (first_x, first_y), (second_x, second_y), (0, 211, 255), 1)
+            
+        # 아랫입술 그리기
+        for idx_tup in lower_lip_idx:
+            first_x = landmarks.part(idx_tup[0]).x
+            first_y = landmarks.part(idx_tup[0]).y
+            
+            second_x = landmarks.part(idx_tup[1]).x
+            second_y = landmarks.part(idx_tup[1]).y
+            
+            cv2.line(frame, (first_x, first_y), (second_x, second_y), (0, 211, 255), 1)
 
     # "Webcam Feed" 라는 이름의 창에 현재 프레임을 보여줌
     cv2.imshow('Facial Landmarks', frame)
