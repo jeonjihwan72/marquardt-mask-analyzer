@@ -55,21 +55,15 @@ while True:
         ratio_eyebrow_right = right_eyebrow_width / nose_width if nose_width > 0 else 0
         score4 = calculate_score(ratio_eyebrow_right, 1.618)
         
-        # 5. 눈과 눈 사이 길이 - 미간 길이 (이상적 비율: 황금비 1.0)
-        glabella_width = distance(my_points[21], my_points[22])
-        inner_eye_width = distance(my_points[39], my_points[42])
-        ratio_glabella_eye = inner_eye_width / glabella_width if glabella_width > 0 else 0
-        score5 = calculate_score(ratio_glabella_eye, 1.0)
-        
-        # 6. 얼굴 길이 (이상적 비율: 황금비 1.618)
+        # 5. 얼굴 길이 (이상적 비율: 황금비 1.618)
         upper_face_height = face_height_distance(my_points[0], my_points[16], my_points[48], my_points[54])
         lower_face_height = face_height_distance(my_points[48], my_points[54], my_points[8], my_points[8])
         ratio_face_height = upper_face_height / lower_face_height if lower_face_height > 0 else 0
-        score6 = calculate_score(ratio_face_height, 1.618)
+        score5 = calculate_score(ratio_face_height, 1.618)
 
         # 가중치 적용 계산
-        weights = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-        scores = [score1, score2, score3, score4, score5, score6]
+        weights = [1.0, 1.0, 1.0, 1.0, 1.0]
+        scores = [score1, score2, score3, score4, score5]
         
         # 최종 평균 점수 계산
         final_score = sum(s*w for s,w in zip(scores, weights)) / sum(weights)
@@ -82,14 +76,19 @@ while True:
         cv2.putText(frame, f"2. nose/eye: {score2:.1f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
         cv2.putText(frame, f"3. left eyebrow: {score3:.1f}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
         cv2.putText(frame, f"4. right eyebrow: {score4:.1f}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
-        cv2.putText(frame, f"5. grabella: {score5:.1f}", (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
-        cv2.putText(frame, f"6. face shape: {score6:.1f}", (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+        cv2.putText(frame, f"5. face shape: {score5:.1f}", (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
         
         # 최종 점수 표시
         cv2.putText(frame, f"Total Score: {final_score:.2f}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 211, 255), 2)
         
         # 얼굴 윤곽선 그리기 (기존 코드 재활용 가능)
         cv2.polylines(frame, [my_points[0:17].astype(np.int32)], False, (0, 255, 0), 1)
+        
+        # 얼굴 랜드마크 파란 점 찍기
+        for n in range(0,68):
+            x = landmarks.part(n).x
+            y = landmarks.part(n).y
+            cv2.circle(frame, (x,y), 2, (255, 0, 0), -1)
 
 
     cv2.imshow('Marquardt Mask Final Analyzer', frame)
