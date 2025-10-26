@@ -27,46 +27,26 @@ def calculate_score(user_ratio, ideal_ratio, multiplier=1.5):
 
 # Dlib 랜드마크 인덱스 -> MediaPipe 랜드마크 인덱스 (대략적인 매핑)
 mp_points_map = {
-    # 코 (Dlib 31~35: 콧구멍 주변) -> MediaPipe는 콧볼 끝을 더 잘 표현
-    # Dlib 31: 콧구멍 왼쪽 시작
-    # Dlib 35: 콧구멍 오른쪽 시작
-    # MediaPipe는 콧볼 가장자리 (wing of nose)를 더 정확하게 표현함
     'nose_left_wing': 64,  # 콧볼 왼쪽 끝 (Dlib 31보다 바깥쪽)
     'nose_right_wing': 294, # 콧볼 오른쪽 끝 (Dlib 35보다 바깥쪽)
-    # 코끝
-    'nose_tip' : 19,
+    'nose_tip' : 19,    # 코끝
 
-    # 입술 (Dlib 48~67)
-    # Dlib 48: 입술 왼쪽 끝
-    # Dlib 54: 입술 오른쪽 끝
-    'lip_left_corner': 61,
-    'lip_right_corner': 291,
+    'lip_left_corner': 61,  # 입술 왼쪽 끝
+    'lip_right_corner': 291,    # 입술 오른쪽 끝
 
-    # 눈 (Dlib 36~41: 왼쪽 눈, 42~47: 오른쪽 눈)
-    # Dlib 36: 왼쪽 눈 바깥쪽 끝
-    # Dlib 45: 오른쪽 눈 바깥쪽 끝
     'eye_left_outer': 130, # 왼쪽 눈 바깥쪽
     'eye_right_outer': 359, # 오른쪽 눈 바깥쪽
 
-    # 눈썹 (Dlib 17~21: 왼쪽 눈썹, 22~26: 오른쪽 눈썹)
-    # Dlib 17: 왼쪽 눈썹 시작
-    # Dlib 21: 왼쪽 눈썹 끝 (코 쪽)
-    # Dlib 22: 오른쪽 눈썹 시작 (코 쪽)
-    # Dlib 26: 오른쪽 눈썹 끝
     'eyebrow_left_start': 55,  # 왼쪽 눈썹 시작점 (코 쪽)
     'eyebrow_left_end': 70,   # 왼쪽 눈썹 바깥쪽 끝
     'eyebrow_right_start': 285, # 오른쪽 눈썹 시작점 (코 쪽)
     'eyebrow_right_end': 300,  # 오른쪽 눈썹 바깥쪽 끝
 
-    # 얼굴 윤곽 (Dlib 0~16)
-    # Dlib 0: 턱선 왼쪽 시작점
-    # Dlib 16: 턱선 오른쪽 끝점
-    # Dlib 8: 턱 끝
     'jaw_left_start': 127, # 턱선 왼쪽 (대략)
     'jaw_right_end': 356,  # 턱선 오른쪽 (대략)
     'chin_tip': 152,      # 턱 끝
-    # 눈썹 끝 선
-    'central_eyebrow' : 9
+
+    'central_eyebrow' : 9   # 미간 중앙
 }
 
 cap = cv2.VideoCapture(0)
@@ -91,31 +71,31 @@ while True:
             # --- 마쿼트 마스크의 주요 비율 계산 ---
             
             # 랜드마크 존재 여부 확인 후 계산 (없으면 0 처리)
-            # Dlib 31, 35 -> MP 콧볼 끝
+            # 콧볼 끝
             p_nose_left_wing = mp_points[mp_points_map['nose_left_wing']]
             p_nose_right_wing = mp_points[mp_points_map['nose_right_wing']]
             
-            # Dlib 48, 54 -> MP 입술 양 끝
+            # 입술 양 끝
             p_lip_left = mp_points[mp_points_map['lip_left_corner']]
             p_lip_right = mp_points[mp_points_map['lip_right_corner']]
             
-            # Dlib 36, 45 -> MP 눈 바깥쪽
+            # 눈 바깥쪽
             p_eye_left_outer = mp_points[mp_points_map['eye_left_outer']]
             p_eye_right_outer = mp_points[mp_points_map['eye_right_outer']]
             
-            # Dlib 17, 21 -> MP 왼쪽 눈썹
+            # 왼쪽 눈썹
             p_eyebrow_left_start = mp_points[mp_points_map['eyebrow_left_start']]
             p_eyebrow_left_end = mp_points[mp_points_map['eyebrow_left_end']]
             
-            # Dlib 22, 26 -> MP 오른쪽 눈썹
+            # 오른쪽 눈썹
             p_eyebrow_right_start = mp_points[mp_points_map['eyebrow_right_start']]
             p_eyebrow_right_end = mp_points[mp_points_map['eyebrow_right_end']]
             
-            # Dlib 0, 16 -> MP 턱선
+            # 턱선
             p_jaw_left_start = mp_points[mp_points_map['jaw_left_start']]
             p_jaw_right_end = mp_points[mp_points_map['jaw_right_end']]
             
-            # Dlib 8 -> MP 턱 끝
+            # 턱 끝
             p_chin_tip = mp_points[mp_points_map['chin_tip']]
             
             # 눈썹 끝 선
@@ -132,9 +112,6 @@ while True:
             score1 = calculate_score(ratio_nose_lip, 1.618, 1.0)
             
             # 2. 콧볼 너비 - 눈 거리 (이상적 비율: 황금비 1.618 ^ 2)
-            # Dlib의 eye_width는 양 눈 바깥쪽 끝 거리이지만,
-            # 마쿼트 마스크에서는 보통 양 눈의 안쪽 끝(혹은 눈동자 중심) 사이 거리를 콧볼 너비와 비교
-            # 여기서는 Dlib 코드의 의도를 살려 눈 바깥쪽 끝 거리로 진행.
             eye_outer_width = distance(p_eye_left_outer, p_eye_right_outer) # 눈 전체 너비
             ratio_nose_eye = eye_outer_width / nose_width if nose_width > 0 else 0
             score2 = calculate_score(ratio_nose_eye, 1.618 ** 2, 2.0)
@@ -150,11 +127,6 @@ while True:
             score4 = calculate_score(ratio_eyebrow_right, 1.618, 1.5)
             
             # 5. 얼굴 길이 (이상적 비율: 황금비 1.618)
-            # Dlib의 face_height_distance 함수를 MP 랜드마크에 맞게 조정
-            # 윗 얼굴 높이: Dlib (0,16) -> (48,54) 즉 턱선 상단~입술 중앙
-            # 아랫 얼굴 높이: Dlib (48,54) -> (8,8) 즉 입술 중앙~턱 끝
-            
-            # MP에서는 얼굴 외곽선과 입술, 턱 끝 랜드마크를 사용
             upper_face_height = face_height_distance(p_jaw_left_start, p_jaw_right_end, p_lip_left, p_lip_right)
             lower_face_height = face_height_distance(p_lip_left, p_lip_right, p_chin_tip, p_chin_tip) # 턱 끝은 한 점이므로, 양쪽을 같은 점으로 전달
             ratio_face_height = upper_face_height / lower_face_height if lower_face_height > 0 else 0
@@ -219,7 +191,7 @@ while True:
             for idx in highlight_points:
                  cv2.circle(frame, tuple(mp_points[idx]), 3, (255, 0, 0), -1) # 파란색으로 강조
             
-            # 모든 랜드마크를 작은 파란 점으로 찍기 (선택 사항)
+            # 모든 랜드마크를 작은 파란 점으로 찍기
             for p in mp_points:
                cv2.circle(frame, tuple(p), 1, (255, 0, 0), -1)
 
